@@ -1,10 +1,10 @@
-"""Video -> text -> distilled notes.  yt-dlp (audio) -> Whisper -> local LLM (Ollama)."""
+"""Video -> text -> distilled notes, via the provider layer (local or cloud)."""
 import glob
 import json
 import os
-import re
 import subprocess
-import urllib.request
+
+from . import providers
 
 
 def _load_records(cfg):
@@ -22,43 +22,6 @@ def _priority_index(title, priority):
         if key.lower() in (title or "").lower():
             return i
     return len(priority)
-
-
-def _whisper(cfg, audio, out_txt):
-    model = cfg.video["whisper_model"]
-    try:  # Apple Silicon fast path
-        import mlx_whisper
-        r = mlx_whisper.transcribe(audio, path_or_hf_repo=model)
-        open(out_txt, "w").write(r["text"]); return
-    except Exception:
-        pass
-    import whisper  # openai-whisper fallback
-    r = whisper.load_model(model if "/" not in model else "small").transcribe(audio)
-    open(out_txt, "w").write(r["text"])
-
-
-def _distill(cfg, text):
-    chunks = [text[i:i + cfg.distill["chunk_chars"]] for i in range(0, len(text), cfg.distill["chunk_chars"])] or [""]
-    outs = []
-    for i, ch in enumerate(chunks):
-        prompt = ("Distill this course video transcript into tight markdown study notes. Capture key "
-                  "concepts, frameworks, step-by-step methods, concrete examples, and any resources/links/"
-                  "action items mentioned VERBATIM. Omit filler and repetition. Output only the notes."
-                  + (f" (Part {i+1}/{len(chunks)})" if len(chunks) > 1 else "") + "\n\nTRANSCRIPT:\n" + ch)
-        req = {"model": cfg.distill["model"], "stream": False, "think": cfg.distill["reasoning"],
-               "options": {"num_predict": cfg.distill["max_tokens"], "temperature": 0.2}, "prompt": prompt}
-        out = ""
-        for _ in range(2):
-            try:
-                resp = urllib.request.urlopen(cfg.distill["ollama_url"].rstrip("/") + "/api/generate",
-                                              json.dumps(req).encode(), timeout=400)
-                out = json.loads(resp.read()).get("response", "").strip()
-                if out:
-                    break
-            except Exception:
-                out = ""
-        outs.append(out)
-    return "\n\n".join(o for o in outs if o).strip()
 
 
 def transcribe(cfg, progress=lambda **k: None):
@@ -79,13 +42,11 @@ def transcribe(cfg, progress=lambda **k: None):
                     subprocess.run(["yt-dlp", "-f", "mp4-224p/worst", "-x", "--audio-format", "mp3", "--no-warnings",
                                     "-o", os.path.join(cfg.audio, pid + ".%(ext)s"), f"wistia:{wid}"],
                                    check=True, capture_output=True, timeout=600)
-                _whisper(cfg, apath, tpath)
-            if os.path.exists(apath) and not cfg.fidelity["keep_full_transcripts"]:
-                os.remove(apath)
-            elif os.path.exists(apath):
-                os.remove(apath)  # audio always removable; the .txt transcript is kept
+                providers.transcribe_audio(cfg, apath, tpath)
+            if os.path.exists(apath):
+                os.remove(apath)  # transcript is saved; audio no longer needed
             transcript = open(tpath).read().strip()
-            dist = _distill(cfg, transcript) if cfg.distill["enabled"] else transcript
+            dist = providers.distill(cfg, transcript) if cfg.distill["enabled"] else transcript
             if dist:
                 open(dpath, "w").write(dist)
                 done += 1

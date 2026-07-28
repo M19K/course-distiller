@@ -43,22 +43,29 @@ output/
 Each lesson file contains the portal text, a **distilled transcript** of its video, the **extracted
 text of its attachments**, and all resource links — verbatim.
 
+It's **plain markdown**, so it's usable *anywhere*: drop it into NotebookLM, query it with Claude or
+ChatGPT, load it into Obsidian, or just `grep`. NotebookLM is one option, not the destination.
+
 ## Using it (web UI walkthrough)
 
 ```bash
 streamlit run app.py
 ```
 
-1. **Configure** — paste your course's base URL and product slug, toggle video/attachments, pick models.
+1. **Configure** — paste your course's URL and choose **where the AI runs**: *local* (free — needs
+   Ollama / Apple-Silicon) or a *cloud provider* (paste an API key — **no GPU required**). Keys are
+   passed as environment variables, never written to disk.
 
-   <img src="docs/ui-filled.png" alt="filled-in config" width="620">
+   <img src="docs/ui-filled.png" alt="config with local/cloud providers" width="660">
 
-2. **Start** — a browser window opens. **You** log in to your course there (the tool never sees your
-   password). It detects the login and begins.
-3. **Watch** — a live dashboard shows each phase: 🗺️ map → 📄 harvest → 🎬 transcribe → 🔍 extract → 📦 bundle.
-4. **Download** — when it finishes, grab the NotebookLM bundles as a zip and drop them into one notebook.
+2. **Analyze** — a browser opens for **you** to log in (the tool never sees your password). It crawls
+   the course and shows a **pre-flight estimate** — lessons, videos, time, and (for cloud) cost.
+   Nothing expensive runs until you approve it.
+3. **Proceed** — a live dashboard tracks each phase: 🗺️ map → 📄 harvest → 🎬 transcribe → 🔍 extract → 📦 bundle.
+4. **Download** — grab the markdown and use it anywhere.
 
-Prefer the terminal? `cp config.example.yaml config.yaml`, edit it, then `python -m coursedistiller.run`.
+Prefer the terminal? `cp config.example.yaml config.yaml`, edit it, then `python -m coursedistiller.run`
+(add `--plan` to see the estimate first).
 
 ## How it works
 
@@ -105,6 +112,9 @@ distilling — is minutes. Transcription time depends almost entirely on your ha
 | Intel / AMD, no GPU | `openai-whisper` (CPU) | ~0.5–1× realtime | **several hours** |
 | NVIDIA GPU | `openai-whisper` (CUDA) | ~5–10× realtime | ~1–1.5 hr |
 
+- **No GPU? Use a cloud provider.** Set transcription to **Groq** and the table above stops mattering —
+  a full course transcribes in minutes for a few cents, and the pre-flight estimate shows the exact
+  number *before* you commit. This is the "usable by anyone" path.
 - **Text only** (toggle video off): the whole course in **a couple of minutes**.
 - **RAM:** a 20B distill model needs ~16 GB. On a tight machine, use a smaller Ollama model, or set
   `distill.enabled: false` (you'll get raw transcripts instead of notes).

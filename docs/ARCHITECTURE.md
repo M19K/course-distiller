@@ -20,7 +20,9 @@ independently, and a crash never loses completed work.
 |---|---|
 | `config.py` | Loads `config.yaml` over defaults; resolves all paths and URL templates |
 | `crawl.py` | Playwright browser + authenticated `fetch()`; graph-closure crawl; HTML→markdown parse; attachment download |
-| `transcribe.py` | `yt-dlp` audio → Whisper (mlx or openai) → local-LLM distillation |
+| `transcribe.py` | `yt-dlp` pulls audio, then hands transcription + distillation to `providers` |
+| `providers.py` | Transcription + distillation — **local or cloud**, dispatched by config; keys from env only |
+| `estimate.py` | Pre-flight: reads each video's duration, projects time + (cloud) cost |
 | `extract.py` | PDF/OCR/xlsx/pptx/docx → text |
 | `compile.py` | Assembles records + transcripts + attachment text into per-lesson markdown |
 | `bundle.py` | Concatenates per-section bundles for NotebookLM |
@@ -53,6 +55,17 @@ already produced. A multi-hour transcription run can be interrupted and resumed 
 Streamlit and Playwright's sync API don't share an event loop cleanly, so the UI launches the pipeline
 as a **subprocess** and tails a JSON-lines progress file. This keeps the UI responsive and the core
 runnable head-less.
+
+**6. Local or cloud — the user's choice.**
+Transcription and distillation each dispatch through `providers.py` to either a local engine
+(Whisper / Ollama, free) or a cloud API (Groq/OpenAI for Whisper; OpenAI/Anthropic/Gemini/OpenRouter
+for the LLM). **API keys are read from environment variables only**, never written to config. This is
+what makes the tool usable on a machine with no GPU.
+
+**7. Estimate before you commit.**
+Because Wistia exposes each video's duration, the pipeline sums the audio up front and projects time
+(and, for cloud, cost) *before* the expensive transcription runs. The UI gates on it:
+**analyze → see the number → proceed.**
 
 ## Fidelity contract
 

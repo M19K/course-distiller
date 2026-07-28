@@ -5,41 +5,49 @@
 # ─────────────────────────────────────────────────────────────────────────────
 
 site:
-  # The course host (a Kajabi-style site). Include https://
-  base_url: "https://www.example-course.com"
-  # The product slug in the URL: /products/<product_slug>/categories/<id>/posts/<id>
-  product_slug: "my-course"
+  base_url: "https://www.example-course.com"   # the course host (include https://)
+  product_slug: "my-course"                     # /products/<product_slug>/categories/<id>/posts/<id>
 
-output_dir: "./output"     # the finished knowledge base (markdown + NotebookLM bundles)
+output_dir: "./output"     # the finished knowledge base (universal markdown)
 work_dir:   "./work"       # raw downloads, transcripts, shards (git-ignored)
 
 crawl:
-  pace_ms: 250             # politeness delay between requests (be kind to the host)
-  # Optional: seed top-level category IDs. Empty = auto-discover from the product home.
-  top_categories: []
+  pace_ms: 250             # politeness delay between requests
+  top_categories: []       # empty = auto-discover from the product home
 
 video:
   enabled: true
-  # Apple Silicon: mlx model. Elsewhere openai-whisper model name (e.g. "small", "large-v3").
-  whisper_model: "mlx-community/whisper-large-v3-turbo"
-  # Optional priority order: module-name substrings, highest first. Empty = map order.
-  priority: []
-  # Optional cap on how many videos to transcribe per run (0 = all). Great for testing.
-  max_videos: 0
+  # Where transcription runs:
+  #   local  = Whisper on your machine (free; best on Apple Silicon / a GPU)
+  #   groq   = cloud Whisper, cheap & fast (~$0.04/hr audio) — best if you have no GPU
+  #   openai = cloud Whisper (~$0.36/hr audio)
+  transcribe_provider: "local"
+  whisper_model: "mlx-community/whisper-large-v3-turbo"   # local only; use "small" on CPU
+  max_videos: 0            # 0 = all; set a few for a first test run
+  priority: []             # optional: module-name substrings, highest first
 
 distill:
-  enabled: true                       # summarize transcripts with a local LLM
-  ollama_url: "http://localhost:11434"
-  model: "gpt-oss:20b"
-  reasoning: "low"                    # gpt-oss: keep low or responses can come back empty
+  enabled: true
+  # Where the summarization LLM runs:
+  #   local = Ollama (free)   |  openai | anthropic | gemini | openrouter = cloud
+  provider: "local"
+  ollama_url: "http://localhost:11434"   # local provider only
+  model: ""                # blank = a sensible cheap default per provider
+  reasoning: "low"         # gpt-oss (local) only
   max_tokens: 2000
   chunk_chars: 9000
 
 attachments:
   download: true
   extract_text: true
-  ocr_fallback: true                  # OCR scanned/image PDFs with tesseract
+  ocr_fallback: true
 
 fidelity:
-  # Links, emails, forms, deadlines are always kept VERBATIM. Prose/video are distilled.
-  keep_full_transcripts: true         # retain raw transcripts on disk (not in the corpus)
+  keep_full_transcripts: true
+
+# ─── Cloud API keys ──────────────────────────────────────────────────────────
+# Keys are read from ENVIRONMENT VARIABLES only — never put them in this file.
+#   export GROQ_API_KEY=...        (transcribe_provider: groq)
+#   export OPENAI_API_KEY=...      (openai transcription or distillation)
+#   export ANTHROPIC_API_KEY=...   export GEMINI_API_KEY=...   export OPENROUTER_API_KEY=...
+# (The web UI collects the key in a password field and passes it as an env var for you.)

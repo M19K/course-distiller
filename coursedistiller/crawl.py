@@ -6,6 +6,7 @@ product -> categories -> posts graph using authenticated same-origin fetch()
 close the branching graph, and downloads attachments. Writes JSON shards to
 work/harvest_shards/. Only ever run against content you're entitled to access.
 """
+import glob
 import json
 import os
 import time
@@ -99,7 +100,12 @@ def _is_authed(page, cfg):
 
 
 def crawl(cfg, progress=lambda **k: None, login_timeout=300):
-    """Full crawl. progress(phase=..., done=..., total=..., msg=...)."""
+    """Full crawl. progress(phase=..., done=..., total=..., msg=...). Resumable: skips if already crawled."""
+    existing = glob.glob(os.path.join(cfg.shards, "*.json"))
+    if existing:
+        n = sum(len(json.load(open(f))) for f in existing)
+        progress(phase="crawl_done", msg=f"using cached crawl ({n} lessons)")
+        return n
     prof = os.path.join(cfg.work, "browser_profile")
     os.makedirs(prof, exist_ok=True)
     with sync_playwright() as pw:
