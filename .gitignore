@@ -1,0 +1,20 @@
+# NEVER commit extracted course content — it's the user's (or a third party's) material
+/output/
+/work/
+*.mp3
+*.mp4
+*.wav
+raw/
+lessons/
+notebooklm/
+transcripts/
+attachments/
+*.local.yaml
+config.yaml
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+.DS_Store

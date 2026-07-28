@@ -1,0 +1,45 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# CourseMind — configuration
+# Copy this file to `config.yaml` and fill it in for the course YOU have access to.
+# CourseMind only works on content you are legitimately entitled to access.
+# ─────────────────────────────────────────────────────────────────────────────
+
+site:
+  # The course host (a Kajabi-style site). Include https://
+  base_url: "https://www.example-course.com"
+  # The product slug in the URL: /products/<product_slug>/categories/<id>/posts/<id>
+  product_slug: "my-course"
+
+output_dir: "./output"     # the finished knowledge base (markdown + NotebookLM bundles)
+work_dir:   "./work"       # raw downloads, transcripts, shards (git-ignored)
+
+crawl:
+  pace_ms: 250             # politeness delay between requests (be kind to the host)
+  # Optional: seed top-level category IDs. Empty = auto-discover from the product home.
+  top_categories: []
+
+video:
+  enabled: true
+  # Apple Silicon: mlx model. Elsewhere openai-whisper model name (e.g. "small", "large-v3").
+  whisper_model: "mlx-community/whisper-large-v3-turbo"
+  # Optional priority order: module-name substrings, highest first. Empty = map order.
+  priority: []
+  # Optional cap on how many videos to transcribe per run (0 = all). Great for testing.
+  max_videos: 0
+
+distill:
+  enabled: true                       # summarize transcripts with a local LLM
+  ollama_url: "http://localhost:11434"
+  model: "gpt-oss:20b"
+  reasoning: "low"                    # gpt-oss: keep low or responses can come back empty
+  max_tokens: 2000
+  chunk_chars: 9000
+
+attachments:
+  download: true
+  extract_text: true
+  ocr_fallback: true                  # OCR scanned/image PDFs with tesseract
+
+fidelity:
+  # Links, emails, forms, deadlines are always kept VERBATIM. Prose/video are distilled.
+  keep_full_transcripts: true         # retain raw transcripts on disk (not in the corpus)
