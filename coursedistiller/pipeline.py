@@ -7,7 +7,7 @@ from . import bundle as _bundle
 
 
 def run(cfg, progress=lambda **k: None):
-    progress(phase="start", msg="Starting CourseMind")
+    progress(phase="start", msg="Starting course-distiller")
     _crawl.crawl(cfg, progress)
     if cfg.video["enabled"]:
         _transcribe.transcribe(cfg, progress)

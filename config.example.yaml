@@ -1,7 +1,7 @@
 # ─────────────────────────────────────────────────────────────────────────────
-# CourseMind — configuration
+# course-distiller — configuration
 # Copy this file to `config.yaml` and fill it in for the course YOU have access to.
-# CourseMind only works on content you are legitimately entitled to access.
+# course-distiller only works on content you are legitimately entitled to access.
 # ─────────────────────────────────────────────────────────────────────────────
 
 site:

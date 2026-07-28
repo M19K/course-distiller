@@ -7,7 +7,7 @@ from . import pipeline
 
 
 def main():
-    ap = argparse.ArgumentParser(description="CourseMind: turn a course you own into a knowledge base")
+    ap = argparse.ArgumentParser(description="course-distiller: turn a course you own into a knowledge base")
     ap.add_argument("--config", default="config.yaml")
     ap.add_argument("--progress-file", default=None)
     args = ap.parse_args()

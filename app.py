@@ -1,4 +1,4 @@
-"""CourseMind — local web UI (Streamlit).
+"""course-distiller — local web UI (Streamlit).
 
 Run:  streamlit run app.py
 Everything happens on your machine. A browser window opens for YOU to log in to
@@ -25,8 +25,8 @@ PHASES = [
     ("extract", "🔍 Extract file text"), ("compile", "🧩 Compile corpus"), ("bundle", "📦 Bundle"),
 ]
 
-st.set_page_config(page_title="CourseMind", page_icon="🧠", layout="centered")
-st.title("🧠 CourseMind")
+st.set_page_config(page_title="course-distiller", page_icon="🧠", layout="centered")
+st.title("🧠 course-distiller")
 st.caption("Turn any course you have access to into a private, LLM-queryable knowledge base — locally, for $0.")
 
 with st.expander("How it works / before you start", expanded=False):
@@ -68,7 +68,7 @@ if start:
     yaml.safe_dump(cfg, open(CONFIG, "w"))
     open(PROGRESS, "w").close()  # truncate
     st.session_state["proc"] = subprocess.Popen(
-        [sys.executable, "-m", "coursemind.run", "--config", CONFIG, "--progress-file", PROGRESS],
+        [sys.executable, "-m", "coursedistiller.run", "--config", CONFIG, "--progress-file", PROGRESS],
         cwd=ROOT)
     st.session_state["running"] = True
 

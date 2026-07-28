@@ -1,4 +1,4 @@
-# Case study: CourseMind
+# Case study: course-distiller
 
 *A product write-up — the problem, the decisions, the trade-offs, and the outcome.*
 
@@ -55,7 +55,7 @@ see is a core product responsibility, not a QA afterthought.
 
 ## Outcome
 
-On its first real target — a ~700-lesson course — CourseMind produced a complete, verified,
+On its first real target — a ~700-lesson course — course-distiller produced a complete, verified,
 queryable knowledge base: **every lesson's text, ~170 distilled video transcripts, ~140 attachment files
 with their text extracted, and all links/contacts/forms** — for **$0**, entirely on-device, ready to
 query in NotebookLM.

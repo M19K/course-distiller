@@ -1,0 +1,23 @@
+# Worked-example config. Copy to ../config.yaml and edit the two `site` values for YOUR course.
+# (This points at a fictional course — it won't crawl anything real.)
+
+site:
+  base_url: "https://learn.example-academy.com"
+  product_slug: "product-management-101"
+
+output_dir: "./output"
+work_dir: "./work"
+
+video:
+  enabled: true
+  whisper_model: "mlx-community/whisper-large-v3-turbo"   # Apple Silicon; use "small" on CPU-only
+  max_videos: 3          # start small: transcribe 3 videos, verify output, then set to 0 (all)
+
+distill:
+  enabled: true
+  model: "gpt-oss:20b"
+
+attachments:
+  download: true
+  extract_text: true
+  ocr_fallback: true

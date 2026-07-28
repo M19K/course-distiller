@@ -1,6 +1,6 @@
 # Architecture
 
-CourseMind is a small orchestration layer (~500 lines) over battle-tested tools. The design
+course-distiller is a small orchestration layer (~500 lines) over battle-tested tools. The design
 priorities were: **local-first, resumable, and correct on branching course structures.**
 
 ## Data flow
