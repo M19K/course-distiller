@@ -1,7 +1,7 @@
 <h1 align="center">🧠 course-distiller</h1>
 
 <p align="center">
-  <b>Turn a course you have access to into a private, LLM-queryable knowledge base — locally, for $0.</b>
+  <b>Turn a course you have access to into a private, LLM-queryable knowledge base, locally, for $0.</b>
 </p>
 
 <p align="center">
@@ -23,10 +23,10 @@
 
 Great courses are locked inside video players and PDFs. You can't search them, can't ask them
 questions, and re-watching a 90-minute recording to find one framework is painful. Tools like
-NotebookLM answer questions over text brilliantly — *if only you had the text.*
+NotebookLM answer questions over text brilliantly, *if only you had the text.*
 
-**course-distiller** produces exactly that: a clean markdown knowledge base — lesson text,
-**distilled video transcripts**, **extracted PDF/slide content**, and every link/contact/form —
+**course-distiller** produces exactly that: a clean markdown knowledge base: lesson text,
+**distilled video transcripts**, **extracted PDF/slide content**, and every link/contact/form,
 ready for NotebookLM or any LLM. It runs entirely on your machine. No API bills, no uploading your
 paid content to a third party.
 
@@ -35,13 +35,13 @@ paid content to a third party.
 ```
 output/
 ├── lessons/              # one markdown file per lesson, grouped by section
-├── notebooklm/           # consolidated per-section bundles — upload these to NotebookLM
+├── notebooklm/           # consolidated per-section bundles, upload these to NotebookLM
 ├── _INDEX.md             # clickable map of the whole course
 └── PROTOCOLS.md          # auto-aggregated contacts, forms, and resource links
 ```
 
 Each lesson file contains the portal text, a **distilled transcript** of its video, the **extracted
-text of its attachments**, and all resource links — verbatim.
+text of its attachments**, and all resource links, verbatim.
 
 It's **plain markdown**, so it's usable *anywhere*: drop it into NotebookLM, query it with Claude or
 ChatGPT, load it into Obsidian, or just `grep`. NotebookLM is one option, not the destination.
@@ -52,17 +52,17 @@ ChatGPT, load it into Obsidian, or just `grep`. NotebookLM is one option, not th
 streamlit run app.py
 ```
 
-1. **Configure** — paste your course's URL and choose **where the AI runs**: *local* (free — needs
-   Ollama / Apple-Silicon) or a *cloud provider* (paste an API key — **no GPU required**). Keys are
+1. **Configure**. Paste your course's URL and choose **where the AI runs**: *local* (free, needs
+   Ollama / Apple-Silicon) or a *cloud provider* (paste an API key, **no GPU required**). Keys are
    passed as environment variables, never written to disk.
 
    <img src="docs/ui-filled.png" alt="config with local/cloud providers" width="660">
 
-2. **Analyze** — a browser opens for **you** to log in (the tool never sees your password). It crawls
-   the course and shows a **pre-flight estimate** — lessons, videos, time, and (for cloud) cost.
+2. **Analyze**. A browser opens for **you** to log in (the tool never sees your password). It crawls
+   the course and shows a **pre-flight estimate**. Lessons, videos, time, and (for cloud) cost.
    Nothing expensive runs until you approve it.
-3. **Proceed** — a live dashboard tracks each phase: 🗺️ map → 📄 harvest → 🎬 transcribe → 🔍 extract → 📦 bundle.
-4. **Download** — grab the markdown and use it anywhere.
+3. **Proceed**. A live dashboard tracks each phase: 🗺️ map → 📄 harvest → 🎬 transcribe → 🔍 extract → 📦 bundle.
+4. **Download**. Grab the markdown and use it anywhere.
 
 Prefer the terminal? `cp config.example.yaml config.yaml`, edit it, then `python -m coursedistiller.run`
 (add `--plan` to see the estimate first).
@@ -90,7 +90,7 @@ resumability, why the models take turns).
 **Prerequisites** (one-time):
 ```bash
 brew install ffmpeg poppler tesseract        # macOS (Linux: apt install ffmpeg poppler-utils tesseract-ocr)
-# Ollama for local distillation — https://ollama.com
+# Ollama for local distillation: https://ollama.com
 ollama pull gpt-oss:20b                       # or any local model you like
 ```
 **The tool:**
@@ -103,8 +103,8 @@ playwright install chromium
 
 ## ⏱️ Time & hardware expectations
 
-**Whisper (video transcription) is the long pole.** Everything else — crawling, parsing, downloading,
-distilling — is minutes. Transcription time depends almost entirely on your hardware:
+**Whisper (video transcription) is the long pole.** Everything else, crawling, parsing, downloading,
+distilling, is minutes. Transcription time depends almost entirely on your hardware:
 
 | Machine | Whisper backend | ~Speed | A 40-lesson course (~7 hrs of video) |
 |---|---|---|---|
@@ -112,7 +112,7 @@ distilling — is minutes. Transcription time depends almost entirely on your ha
 | Intel / AMD, no GPU | `openai-whisper` (CPU) | ~0.5–1× realtime | **several hours** |
 | NVIDIA GPU | `openai-whisper` (CUDA) | ~5–10× realtime | ~1–1.5 hr |
 
-- **No GPU? Use a cloud provider.** Set transcription to **Groq** and the table above stops mattering —
+- **No GPU? Use a cloud provider.** Set transcription to **Groq** and the table above stops mattering,
   a full course transcribes in minutes for a few cents, and the pre-flight estimate shows the exact
   number *before* you commit. This is the "usable by anyone" path.
 - **Text only** (toggle video off): the whole course in **a couple of minutes**.
@@ -122,7 +122,7 @@ distilling — is minutes. Transcription time depends almost entirely on your ha
 
 ## 📂 Worked example
 
-See [`examples/`](examples/) for a complete walkthrough — a sample `config.yaml`, the command to run,
+See [`examples/`](examples/) for a complete walkthrough, a sample `config.yaml`, the command to run,
 and the exact output tree you should expect (with a real compiled lesson).
 
 ## Configuration
@@ -144,9 +144,9 @@ whether to transcribe video, which Whisper/LLM models, politeness pacing, OCR, a
 ## ⚖️ Ethical & legal use
 
 course-distiller is a **personal-productivity tool for content you are legitimately entitled to
-access** — like `yt-dlp` or a read-later app. It automates *your own* logged-in session.
+access**, like `yt-dlp` or a read-later app. It automates *your own* logged-in session.
 
-- **Do not** redistribute extracted content — it belongs to its creator. The `.gitignore` ensures no
+- **Do not** redistribute extracted content, it belongs to its creator. The `.gitignore` ensures no
   downloaded content is ever committed.
 - **Do not** use it to circumvent access controls or access content you haven't paid for.
 - Respect each platform's Terms of Service. You are responsible for how you use this tool.
@@ -160,9 +160,9 @@ access** — like `yt-dlp` or a read-later app. It automates *your own* logged-i
 
 ## Learn more
 
-- 📐 [Architecture](docs/ARCHITECTURE.md) — how the pipeline is built and why
-- 📝 [Product case study](docs/CASE-STUDY.md) — the problem, the decisions, the trade-offs
+- 📐 [Architecture](docs/ARCHITECTURE.md): how the pipeline is built and why
+- 📝 [Product case study](docs/CASE-STUDY.md), the problem, the decisions, the trade-offs
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE).
