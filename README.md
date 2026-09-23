@@ -166,3 +166,9 @@ access**, like `yt-dlp` or a read-later app. It automates *your own* logged-in s
 ## License
 
 MIT. See [LICENSE](LICENSE).
+
+## Author
+
+Built by **Maaz Kazi** — product and systems, San Francisco.
+
+[maazkazi.com](https://maazkazi.com) · [github.com/M19K](https://github.com/M19K) · [linkedin.com/in/maazkazi26](https://www.linkedin.com/in/maazkazi26/)
